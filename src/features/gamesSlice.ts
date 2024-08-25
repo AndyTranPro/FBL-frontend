@@ -23,12 +23,12 @@ const initialState: GamesState = {
 // fetches the list of games from the server
 export const fetchGames = createAsyncThunk('games/fetchGames', async () => {
     const response = await getGames();
-    return response;
+    return response.$values;
 });
 
 // adds a new game to the server
-export const addGame = createAsyncThunk('games/addGame', async (newGame: { name: string; author: string; rules: Record<number, string> }) => {
-    const response = await createGame(newGame.name, newGame.author, newGame.rules);
+export const addGame = createAsyncThunk('games/addGame', async (newGame: { name: string; author: string; min: number, max: number, rules: Record<number, string> }) => {
+    const response = await createGame(newGame.name, newGame.author, newGame.min, newGame.max, newGame.rules);
     return response;
 });
 

@@ -77,16 +77,11 @@ const sessionSlice = createSlice({
             .addCase(fetchNextNumber.fulfilled, (state, action) => {
                 state.currentNumber = action.payload;
             })
-            .addCase(sendAnswer.fulfilled, (state, action) => {
-                if (action.payload) {
-                    state.score += 1;
-                }
-                state.numQuestions += 1;
-            })
             .addCase(endCurrentSession.fulfilled, (state, action) => {
                 state.status = 'ended';
-                state.score = action.payload.score;
-            });;
+                state.score = action.payload.finalScore;
+                state.numQuestions = action.payload.totalQuestions;
+            });
     },
 });
 

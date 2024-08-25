@@ -13,8 +13,9 @@ const Game: React.FC = () => {
     const [duration, setDuration] = useState(60);
 
     const handleStartSession = async () => {
-        await dispatch(beginSession({ gameId: Number(gameId), playerName, duration }));
-        navigate(`/sessions/${gameId}`);
+        const response  = await dispatch(beginSession({ gameId: Number(gameId), playerName, duration }));
+        const sessionId = response.payload.sessionId;
+        navigate(`/sessions/${sessionId}`);
     };
 
     return (

@@ -6,8 +6,8 @@ export const api = axios.create({
     baseURL: API_BASE_URL,
 });
 
-export const createGame = async (name: string, author: string, rules: Record<number, string>) => {
-    const response = await api.post('/games', { name, author, rules });
+export const createGame = async (name: string, author: string, min: number, max: number, rules: Record<number, string>) => {
+    const response = await api.post('/games', { name, author, min, max, rules });
     return response.data;
 };
 
