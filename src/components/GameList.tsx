@@ -31,9 +31,40 @@ const GameList: React.FC = () => {
             >
                 Available Games
             </Typography>
-            <List sx={{ height: '100%', overflow: 'auto' }}>
+            <List
+                sx={{
+                    maxHeight: '80%',
+                    overflowY: 'auto',
+                    overflowX: 'hidden',
+                    '&::-webkit-scrollbar': {
+                        width: '8px',
+                    },
+                    '&::-webkit-scrollbar-track': {
+                        background: '#f1f1f1',
+                        borderRadius: '10px',
+                    },
+                    '&::-webkit-scrollbar-thumb': {
+                        background: '#888',
+                        borderRadius: '10px',
+                        border: '2px solid #f1f1f1',
+                    },
+                    '&::-webkit-scrollbar-thumb:hover': {
+                        backgroundColor: '#555',
+                    },
+                }}
+            >
                 {games.map((game) => (
-                    <ListItem key={game.gameId} sx={{ justifyContent: 'center' }}>
+                    <ListItem
+                        key={game.gameId}
+                        sx={{
+                            width: '100%',
+                            justifyContent: 'center',
+                            transition: 'transform 0.2s ease-in-out',
+                            '&:hover': {
+                                transform: 'scale(1.15)',
+                            },
+                        }}
+                    >
                         <Button
                             variant="contained"
                             color="primary"

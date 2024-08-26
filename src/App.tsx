@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import './global.css';
 import Home from './pages/Home';
 import Game from './pages/Game';
 import SessionPage from './pages/SessionPage';

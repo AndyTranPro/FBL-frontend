@@ -3,48 +3,65 @@ import { useAppDispatch } from '../features/store';
 import { addGame } from '../features/gamesSlice';
 import { TextField, Button, Box, Grid, Typography } from '@mui/material';
 
-// A form component to create a new game
-
 const GameForm: React.FC = () => {
     const [name, setName] = useState('');
     const [author, setAuthor] = useState('');
-    const [min, setMin] = useState(0);
-    const [max, setMax] = useState(100);
+    const [min, setMin] = useState<number | string>(0);
+    const [max, setMax] = useState<number | string>(100);
     const [rules, setRules] = useState<{ number: string; word: string }[]>([{ number: '', word: '' }]);
+    const [errors, setErrors] = useState({
+        name: false,
+        author: false,
+        min: false,
+        max: false,
+        rules: [] as boolean[]
+    });
     const dispatch = useAppDispatch();
 
-    // Add a new rule to the form
     const handleAddRule = () => {
         setRules([...rules, { number: '', word: '' }]);
+        setErrors({ ...errors, rules: [...errors.rules, false] });
     };
 
-    // Submit the form to create a new game
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        const newErrors = {
+            name: !name,
+            author: !author,
+            min: min === '',
+            max: max === '' || max === 0,
+            rules: rules.map(rule => !rule.number || !rule.word)
+        };
+        setErrors(newErrors);
+
+        if (Object.values(newErrors).some(error => error === true || (Array.isArray(error) && error.some(e => e)))) {
+            return;
+        }
+
         const formattedRules = rules.reduce((acc, rule) => {
             acc[parseInt(rule.number)] = rule.word;
             return acc;
         }, {} as Record<number, string>);
 
-        await dispatch(addGame({ name, author, min, max, rules: formattedRules }));
+        await dispatch(addGame({ name, author, min: Number(min), max: Number(max), rules: formattedRules }));
     };
 
     return (
         <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
             <Typography
-            variant="h4"
-            gutterBottom
-            sx={{
-                textAlign: 'center',
-                background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                fontFamily: 'Roboto, sans-serif',
-                fontWeight: 'bold'
-            }}
+                variant="h4"
+                gutterBottom
+                sx={{
+                    textAlign: 'center',
+                    background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    fontFamily: 'Roboto, sans-serif',
+                    fontWeight: 'bold'
+                }}
             >
-            Create a New Game
-        </Typography>
+                Create a New Game
+            </Typography>
             <Grid container spacing={2}>
                 <Grid item xs={12}>
                     <TextField
@@ -53,6 +70,8 @@ const GameForm: React.FC = () => {
                         onChange={(e) => setName(e.target.value)}
                         fullWidth
                         variant="outlined"
+                        error={errors.name}
+                        helperText={errors.name ? 'Game Name is required' : ''}
                     />
                 </Grid>
                 <Grid item xs={12}>
@@ -62,6 +81,8 @@ const GameForm: React.FC = () => {
                         onChange={(e) => setAuthor(e.target.value)}
                         fullWidth
                         variant="outlined"
+                        error={errors.author}
+                        helperText={errors.author ? 'Author is required' : ''}
                     />
                 </Grid>
                 <Grid item xs={6}>
@@ -69,10 +90,12 @@ const GameForm: React.FC = () => {
                         label="Min"
                         type="number"
                         value={min}
-                        onChange={(e) => setMin(parseInt(e.target.value) || 0)}
+                        onChange={(e) => setMin(e.target.value === '' ? '' : parseInt(e.target.value))}
                         fullWidth
                         variant="outlined"
                         inputProps={{ min: 0 }}
+                        error={errors.min}
+                        helperText={errors.min ? 'Min is required' : ''}
                     />
                 </Grid>
                 <Grid item xs={6}>
@@ -80,10 +103,12 @@ const GameForm: React.FC = () => {
                         label="Max"
                         type="number"
                         value={max}
-                        onChange={(e) => setMax(parseInt(e.target.value))}
+                        onChange={(e) => setMax(e.target.value === '' ? '' : parseInt(e.target.value))}
                         fullWidth
                         variant="outlined"
                         inputProps={{ min: min }}
+                        error={errors.max}
+                        helperText={errors.max ? 'Max is required' : ''}
                     />
                 </Grid>
                 <Grid item xs={12}>
@@ -103,6 +128,8 @@ const GameForm: React.FC = () => {
                                     }}
                                     fullWidth
                                     variant="outlined"
+                                    error={errors.rules[index]}
+                                    helperText={errors.rules[index] ? 'Number is required' : ''}
                                 />
                             </Grid>
                             <Grid item xs={6}>
@@ -116,15 +143,23 @@ const GameForm: React.FC = () => {
                                     }}
                                     fullWidth
                                     variant="outlined"
+                                    error={errors.rules[index]}
+                                    helperText={errors.rules[index] ? 'Word is required' : ''}
                                 />
                             </Grid>
                         </Grid>
                     ))}
                     <Button
                         variant="contained"
-                        color="primary"
                         onClick={handleAddRule}
-                        sx={{ fontWeight: 'bold' }}
+                        sx={{
+                            fontWeight: 'bold',
+                            background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+                            color: 'white',
+                            '&:hover': {
+                                background: 'linear-gradient(45deg, #FF8E53 30%, #FE6B8B 90%)',
+                            },
+                        }}
                     >
                         Add Rule
                     </Button>

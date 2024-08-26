@@ -9,7 +9,7 @@ import {
 
 // A feature to manage the session state
 
-interface SessionState {
+export interface SessionState {
     sessionId: number | null;
     currentNumber: number | null;
     numQuestions: number;

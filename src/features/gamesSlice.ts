@@ -5,11 +5,13 @@ export interface Game {
     gameId: number;
     name: string;
     author: string;
+    min: number;
+    max: number;
     rules: Record<number, string>;
 }
 
 // The games state contains the list of games and the status of the request
-interface GamesState {
+export interface GamesState {
     games: Game[];
     status: 'idle' | 'loading' | 'failed';
 }
